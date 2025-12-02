@@ -5,13 +5,13 @@ plugins {
 }
 
 android {
-    namespace = "com.example.inspirationv2"
+    namespace = "com.schrumli.inspiration"
     compileSdk {
         version = release(36)
     }
 
     defaultConfig {
-        applicationId = "com.example.inspirationv2"
+        applicationId = "com.schrumli.inspiration"
         minSdk = 34
         targetSdk = 36
         versionCode = 1

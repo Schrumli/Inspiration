@@ -1,4 +1,4 @@
-package com.example.inspirationv2.ui.theme
+package com.schrumli.inspiration.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Inspirationv2"
+rootProject.name = "Inspiration"
 include(":app")
  

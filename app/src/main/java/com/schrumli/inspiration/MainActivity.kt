@@ -1,4 +1,4 @@
-package com.example.inspirationv2
+package com.schrumli.inspiration
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -51,15 +51,15 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
-import com.example.inspirationv2.ui.theme.Blue50
-import com.example.inspirationv2.ui.theme.Inspirationv2Theme
+import com.schrumli.inspiration.ui.theme.Blue50
+import com.schrumli.inspiration.ui.theme.InspirationTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            Inspirationv2Theme {
+            InspirationTheme {
                 InspirationApp()
             }
         }
@@ -440,66 +440,5 @@ fun ListHeader(name: String, modifier: Modifier = Modifier) {
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold
         )
-    }
-}
-
-
-// #################
-// # Template code #
-// #################
-
-@PreviewScreenSizes
-@Composable
-fun Inspirationv2App() {
-    var currentDestination by rememberSaveable { mutableStateOf(AppDestinations.HOME) }
-
-    NavigationSuiteScaffold(
-        navigationSuiteItems = {
-            AppDestinations.entries.forEach {
-                item(
-                    icon = {
-                        Icon(
-                            it.icon,
-                            contentDescription = it.label
-                        )
-                    },
-                    label = { Text(it.label) },
-                    selected = it == currentDestination,
-                    onClick = { currentDestination = it }
-                )
-            }
-        }
-    ) {
-        Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-            Greeting(
-                name = currentDestination.label,
-                modifier = Modifier.padding(innerPadding)
-            )
-        }
-    }
-}
-
-enum class AppDestinations(
-    val label: String,
-    val icon: ImageVector,
-) {
-    HOME("Home", Icons.Default.Home),
-    FAVORITES("Favorites", Icons.Default.Favorite),
-    PROFILE("Profile", Icons.Default.AccountBox),
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    Inspirationv2Theme {
-        Greeting("Android")
     }
 }

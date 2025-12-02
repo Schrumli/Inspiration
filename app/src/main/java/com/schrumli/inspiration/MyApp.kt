@@ -1,4 +1,4 @@
-package com.example.inspirationv2
+package com.schrumli.inspiration
 
 import android.app.Application
 import androidx.compose.runtime.mutableStateListOf
