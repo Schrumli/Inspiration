@@ -1,17 +1,23 @@
 package com.example.inspirationv2
 
 import android.content.Context
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 
-class ActivityList(var list_name: String, var context: Context) {
+class ActivityList(initialName: String, var context: Context) {
+    var list_name by mutableStateOf(initialName)
     private var _list = mutableListOf<String>()
-    private val filename = "$list_name.txt"
     private val list_dir = File(context.filesDir, "lists")
-    private val file = File(list_dir, filename)
+    private var file = File(list_dir, "$initialName.txt")
 
     init{
+        if (!list_dir.exists()){
+            list_dir.mkdir()
+        }
         if (!file.exists()) {
             file.createNewFile()
         }
@@ -27,11 +33,13 @@ class ActivityList(var list_name: String, var context: Context) {
     }
 
     fun read_file() {
-        val inputAsString = FileInputStream(file).bufferedReader().use { it.readText() }
-        _list = mutableListOf<String>()
-        inputAsString.split("\n").forEach {
-            if (it != "") {
-                _list.add(it)
+        if(file.exists()){
+            val inputAsString = FileInputStream(file).bufferedReader().use { it.readText() }
+            _list = mutableListOf<String>()
+            inputAsString.split("\n").forEach {
+                if (it.isNotEmpty()) {
+                    _list.add(it)
+                }
             }
         }
     }
@@ -41,7 +49,9 @@ class ActivityList(var list_name: String, var context: Context) {
     }
 
     fun get(): String {
-        // TODO: improve to not return the same thing twice?
+        if(_list.isEmpty()){
+            return ""
+        }
         return _list.random()
     }
 
@@ -57,5 +67,19 @@ class ActivityList(var list_name: String, var context: Context) {
     fun remove(s: String) {
         _list.remove(s)
         write_to_file()
+    }
+
+    fun rename(newName: String) {
+        val newFile = File(list_dir, "$newName.txt")
+        if (file.renameTo(newFile)) {
+            list_name = newName
+            file = newFile
+        }
+    }
+
+    fun deleteFile() {
+        if(file.exists()){
+            file.delete()
+        }
     }
 }

@@ -15,12 +15,16 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -47,6 +51,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
+import com.example.inspirationv2.ui.theme.Blue50
 import com.example.inspirationv2.ui.theme.Inspirationv2Theme
 
 class MainActivity : ComponentActivity() {
@@ -74,8 +79,9 @@ fun InspirationApp() {
 
 @Composable
 fun Listselector(onListSelected: (ActivityList) -> Unit) {
-    var showDialog by remember { mutableStateOf(false) }
-
+    var showAddDialog by remember { mutableStateOf(false) }
+    var showRenameDialog by remember { mutableStateOf<ActivityList?>(null) }
+    var showDeleteDialog by remember { mutableStateOf<ActivityList?>(null) }
 
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp),
@@ -91,28 +97,141 @@ fun Listselector(onListSelected: (ActivityList) -> Unit) {
 
         // LISTS
         for (list in MyApp.lists) {
-            Button(
-                onClick = { onListSelected(list) }
-            ) {
-                Text(list.list_name)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Button(
+                    onClick = { onListSelected(list) },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(list.list_name)
+                }
+                IconButton(
+                    onClick = { showRenameDialog = list },
+                    colors = IconButtonDefaults.iconButtonColors(
+                        containerColor = Blue50,
+                        contentColor = Color.White
+                    )
+                ) {
+                    Icon(Icons.Default.Edit, contentDescription = "Rename list")
+                }
+                IconButton(
+                    onClick = { showDeleteDialog = list },
+                    colors = IconButtonDefaults.iconButtonColors(
+                        containerColor = Color.Red,
+                        contentColor = Color.White
+                    )
+                ) {
+                    Icon(Icons.Default.Delete, contentDescription = "Delete list")
+                }
             }
         }
 
         // Add-new button
         Button(
-            onClick = { showDialog = true }
+            onClick = { showAddDialog = true }
         ) {
             Text("Add new")
         }
-        if (showDialog) {
+        if (showAddDialog) {
             AddNewListPopup(
-                onDismiss = { showDialog = false },
-                onSave = { showDialog = false }
+                onDismiss = { showAddDialog = false },
+                onSave = { showAddDialog = false }
+            )
+        }
+        if (showDeleteDialog != null) {
+            DeleteConfirmationDialog(
+                list = showDeleteDialog!!,
+                onConfirm = { 
+                    it.deleteFile()
+                    MyApp.lists.remove(it)
+                    showDeleteDialog = null
+                 },
+                onDismiss = { showDeleteDialog = null }
+            )
+        }
+        if (showRenameDialog != null) {
+            RenameListPopup(
+                list = showRenameDialog!!,
+                onDismiss = { showRenameDialog = null },
+                onSave = { list, newName ->
+                    list.rename(newName)
+                    showRenameDialog = null
+                }
             )
         }
     }
-
 }
+
+@Composable
+fun DeleteConfirmationDialog(list: ActivityList, onConfirm: (ActivityList) -> Unit, onDismiss: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Delete List") },
+        text = { Text("Are you sure you want to delete the list \"${list.list_name}\"?") },
+        confirmButton = {
+            Button(
+                onClick = { onConfirm(list) },
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+            ) {
+                Text("Delete")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancel")
+            }
+        }
+    )
+}
+
+@Composable
+fun RenameListPopup(
+    list: ActivityList,
+    onDismiss: () -> Unit,
+    onSave: (ActivityList, String) -> Unit
+){
+    var text by remember { mutableStateOf(list.list_name) }
+    val focusRequester = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
+
+    // Automatically request focus when dialog opens
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+    }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            TextButton(onClick = { 
+                onSave(list, text)
+            }) {
+                Text("Save")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancel")
+            }
+        },
+        title = { Text("Rename List") },
+        text = {
+            TextField(
+                value = text,
+                onValueChange = { text = it },
+                singleLine = true,
+                modifier = Modifier.focusRequester(focusRequester),
+                placeholder = { Text("Enter new name") },
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        onSave(list, text)
+                        focusManager.clearFocus()
+                    }
+                )
+            )
+        }
+    )
+}
+
 
 @Composable
 fun ShowList(list: ActivityList, closeList: () -> Unit) {
