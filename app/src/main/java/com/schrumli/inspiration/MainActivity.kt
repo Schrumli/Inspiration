@@ -48,16 +48,17 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import com.schrumli.inspiration.ui.theme.Blue50
 import com.schrumli.inspiration.ui.theme.InspirationTheme
 
+// TODO: combine AddNewListPopup and AddNewItemPopup functions
+// TODO: put composables into different files to improve readability
+// TODO: Add darkmode
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContent {
             InspirationTheme {
                 InspirationApp()
@@ -320,11 +321,10 @@ fun ShowList(list: ActivityList, closeList: () -> Unit) {
         ) {
             Text("Close")
         }
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(48.dp))
     }
 }
 
-// TODO: combine AddNewListPopup and AddNewItemPopup functions
 @Composable
 fun AddNewListPopup(
     onDismiss: () -> Unit,
@@ -428,7 +428,7 @@ fun AddNewItemPopup(
 @Composable
 fun ListHeader(name: String, modifier: Modifier = Modifier) {
     Column(
-        modifier = modifier.padding(bottom = 16.dp),
+        modifier = modifier.padding(bottom = 16.dp, top=24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
