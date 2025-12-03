@@ -48,11 +48,17 @@ class ActivityList(initialName: String, var context: Context) {
         return _list
     }
 
-    fun get(): String {
+    fun get(avoid: String? = null): String {
         if(_list.isEmpty()){
             return ""
         }
-        return _list.random()
+        if(_list.size == 1){
+            return _list[0]
+        }
+        if (avoid == null){
+            return _list.random()
+        }
+        return (_list - avoid).random()
     }
 
     fun size(): Int {

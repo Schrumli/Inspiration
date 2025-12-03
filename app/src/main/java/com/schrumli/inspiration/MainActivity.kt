@@ -251,7 +251,7 @@ fun ShowList(list: ActivityList, closeList: () -> Unit) {
         Row {
             Button(
                 onClick = {
-                    choice = list.get()
+                    choice = list.get(choice)
                 },
                 enabled = list.size() > 0
             ) {
