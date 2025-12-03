@@ -55,6 +55,7 @@ import com.schrumli.inspiration.ui.theme.InspirationTheme
 // TODO: combine AddNewListPopup and AddNewItemPopup functions
 // TODO: put composables into different files to improve readability
 // TODO: Add darkmode
+// TODO: Sanitize input to match characters allowed in filenames
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -428,6 +429,7 @@ fun AddNewItemPopup(
                 value = text,
                 onValueChange = { text = it },
                 singleLine = true,
+
                 modifier = Modifier.focusRequester(focusRequester),
                 placeholder = { Text("Enter text") },
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
