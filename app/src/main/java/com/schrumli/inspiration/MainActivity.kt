@@ -202,9 +202,12 @@ fun RenameListPopup(
     AlertDialog(
         onDismissRequest = onDismiss,
         confirmButton = {
-            TextButton(onClick = { 
-                onSave(list, text)
-            }) {
+            TextButton(
+                onClick = {
+                    onSave(list, text)
+                },
+                enabled = text != ""
+            ) {
                 Text("Save")
             }
         },
@@ -224,7 +227,11 @@ fun RenameListPopup(
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                 keyboardActions = KeyboardActions(
                     onDone = {
-                        onSave(list, text)
+                        if (text != "") {
+                            onSave(list, text)
+                        } else {
+                            onDismiss()
+                        }
                         focusManager.clearFocus()
                     }
                 )
@@ -343,10 +350,13 @@ fun AddNewListPopup(
     AlertDialog(
         onDismissRequest = onDismiss,
         confirmButton = {
-            TextButton(onClick = {
-                MyApp.lists.add(ActivityList(text, context))
-                onSave()
-            }) {
+            TextButton(
+                onClick = {
+                    MyApp.lists.add(ActivityList(text, context))
+                    onSave()
+                },
+                enabled = text != ""
+            ) {
                 Text("Save")
             }
         },
@@ -366,8 +376,12 @@ fun AddNewListPopup(
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                 keyboardActions = KeyboardActions(
                     onDone = {
-                        MyApp.lists.add(ActivityList(text, context))
-                        onSave()
+                        if (text != "") {
+                            MyApp.lists.add(ActivityList(text, context))
+                            onSave()
+                        } else {
+                            onDismiss()
+                        }
                         focusManager.clearFocus()
                     }
                 )
@@ -393,10 +407,13 @@ fun AddNewItemPopup(
     AlertDialog(
         onDismissRequest = onDismiss,
         confirmButton = {
-            TextButton(onClick = {
-                list.add(text)
-                onSave()
-            }) {
+            TextButton(
+                onClick = {
+                    list.add(text)
+                    onSave()
+                },
+                enabled = text != ""
+            ) {
                 Text("Save")
             }
         },
@@ -416,8 +433,12 @@ fun AddNewItemPopup(
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                 keyboardActions = KeyboardActions(
                     onDone = {
-                        list.add(text)
-                        onSave()
+                        if (text != "") {
+                            list.add(text)
+                            onSave()
+                        } else {
+                            onDismiss()
+                        }
                         focusManager.clearFocus()
                     }
                 )
