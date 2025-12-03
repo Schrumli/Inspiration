@@ -296,9 +296,17 @@ fun ShowList(list: ActivityList, closeList: () -> Unit) {
                 verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
             ) {
                 Text(
-                    text = "You should consider: $choice",
+                    text = "You should consider:",
                 )
-
+            }
+            Row(
+                verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+            ) {
+                Text(
+                    text = choice,
+                )
+            }
+            Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically){
                 TextButton(
                     onClick = {
                         list.remove(choice)
